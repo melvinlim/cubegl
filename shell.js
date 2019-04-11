@@ -1,6 +1,6 @@
 var checkboxFunction;
 var setDelayFunction;
-var updateParameters;
+var setAngles;
 var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
 var spinnerElement = document.getElementById('spinner');
@@ -9,7 +9,7 @@ var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
 		setDelayFunction=Module.cwrap('setDelay',null,['int']);
-		updateParameters=Module.cwrap('updateParameters',null,['double','double']);
+		setAngles=Module.cwrap('setAngles',null,['double','double']);
 	},
 	preRun: [],
 	postRun: [],
@@ -95,12 +95,12 @@ sliderOutputDelay.innerHTML = sliderDelay.value;
 
 sliderX.oninput = function() {
 	sliderOutputX.innerHTML = this.value;
-	updateParameters(sliderX.value,sliderY.value);
+	setAngles(sliderX.value,sliderY.value);
 }
 
 sliderY.oninput = function() {
 	sliderOutputY.innerHTML = this.value;
-	updateParameters(sliderX.value,sliderY.value);
+	setAngles(sliderX.value,sliderY.value);
 }
 
 sliderDelay.oninput = function() {

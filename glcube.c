@@ -20,12 +20,10 @@ static float angle_z=0.0;
 
 int forward;
 int autodelay;
-SDL_Surface *screen;
-double cx,cy;
 
-void updateParameters(const double ucx,const double ucy){
-	cx=ucx;
-	cy=ucy;
+void setAngles(const double ucy,const double ucz){
+	angle_y=ucy;
+	angle_z=ucz;
 }
 
 void setDelay(const int delay){
