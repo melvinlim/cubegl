@@ -21,17 +21,19 @@ static float angle_z=0.0;
 int forward;
 int autodelay;
 
-void setAngles(const double ucy,const double ucz){
-	angle_y=ucy;
-	angle_z=ucz;
-}
+extern "C"{
+	void setAngles(const double ucy,const double ucz){
+		angle_y=ucy;
+		angle_z=ucz;
+	}
 
-void setDelay(const int delay){
-	autodelay=delay;
-}
+	void setDelay(const int delay){
+		autodelay=delay;
+	}
 
-void checkbox(){
-	should_rotate = !should_rotate;
+	void checkbox(){
+		should_rotate = !should_rotate;
+	}
 }
 
 static void quit_tutorial( int code )
