@@ -179,7 +179,7 @@ void initGL(){
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
 	glVertexAttribPointer(
 		glGetAttribLocation(program,"colorBuffer"),
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
