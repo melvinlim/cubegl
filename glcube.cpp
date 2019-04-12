@@ -186,11 +186,11 @@ void initGL(){
 //	glDisableVertexAttribArray(0);
 }
 
-void draw2(){
+void drawScreen(){
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	updateScene();
 	glUseProgram(program);
+	updateScene();
 	//glDrawArrays(GL_TRIANGLES,0,3);
 	glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
@@ -222,8 +222,7 @@ static void handle_key_down(SDL_keysym* keysym){
 	}
 }
 
-static void process_events( void )
-{
+static void processEvents(){
     SDL_Event event;
 
     /* Grab all the events off the queue. */
@@ -243,9 +242,8 @@ static void process_events( void )
 }
 
 void main_loop(){
-	process_events();
-//	draw_screen();
-	draw2();
+	processEvents();
+	drawScreen();
 }
 
 static void setup_opengl( int width, int height ){
