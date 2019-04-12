@@ -50,18 +50,19 @@ static const GLfloat vertexPositions[]={
 	-1,-1,0,
 	1,-1,0,
 	1,1,0,
+	-1,1,0,
 };
 
 static GLuint elements[]={
-	0,
-	1,
-	2
+	0,1,2,
+	2,3,0,
 };
 
 static const GLfloat vertexColors[]={
 	1,0,0,1,
 	0,1,0,1,
 	0,0,1,1,
+	0,1,1,1,
 };
 
 GLuint elementsBuf;
@@ -163,7 +164,7 @@ void draw2(){
 	updateScene();
 	glUseProgram(program);
 	//glDrawArrays(GL_TRIANGLES,0,3);
-	glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,0);
+	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
 	SDL_GL_SwapBuffers();
 }
