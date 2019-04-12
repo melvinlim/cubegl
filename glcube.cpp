@@ -249,7 +249,7 @@ void main_loop(){
 }
 
 static void setup_opengl( int width, int height ){
-    glEnable(GL_DEPTH);
+    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glCullFace(GL_BACK);
 //    glFrontFace(GL_CCW);
