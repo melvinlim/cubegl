@@ -53,6 +53,8 @@ static const GLfloat vertexPositions[]={
 	-1,+1,-1,
 	-1,-1,+1,
 	-1,+1,+1,
+	+1,+1,+1,
+	+1,-1,+1,
 };
 
 static GLuint elements[]={
@@ -60,6 +62,10 @@ static GLuint elements[]={
 	2,3,0,
 	0,3,4,
 	4,3,5,
+	5,6,4,
+	6,7,4,
+	4,7,0,
+	0,7,1,
 };
 
 static const GLfloat vertexColors[]={
@@ -69,6 +75,8 @@ static const GLfloat vertexColors[]={
 	0,1,1,1,
 	1,1,0,1,
 	1,0,1,1,
+	1,0,0,1,
+	0,1,1,1,
 };
 
 GLuint elementsBuf;
@@ -108,14 +116,19 @@ mvp = Projection * View * Model;
 void updateScene(){
 	GLuint MatrixID;
 
+//	cameraRotation=rotate(cameraRotation,radians(angle_y),vec3(0,1,0));
+//	cameraRotation=rotate(cameraRotation,radians(angle_z),vec3(0,0,1));
+
 	if(should_rotate){
 		//cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(1,0,0));
 		cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(0,0,1));
 //		std::cout<<glm::to_string(cameraRotation)<<std::endl;
 
+//		MatrixID = glGetUniformLocation(program,"cameraRot");
+//		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
+	}
 		MatrixID = glGetUniformLocation(program,"cameraRot");
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
-	}
 
 	MatrixID = glGetUniformLocation(program,"viewPort");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
@@ -171,7 +184,7 @@ void draw2(){
 	updateScene();
 	glUseProgram(program);
 	//glDrawArrays(GL_TRIANGLES,0,3);
-	glDrawElements(GL_TRIANGLES,12,GL_UNSIGNED_INT,0);
+	glDrawElements(GL_TRIANGLES,24,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
 	SDL_GL_SwapBuffers();
 }
