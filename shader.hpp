@@ -23,7 +23,7 @@ VertexShaderCode="	attribute vec3 vertexBuf;\n\
 										attribute vec4 colorBuffer;\n\
 										varying vec4 fragmentColor;\n\
 										void main(){\n\
-											gl_Position = cameraRot*viewPort*vec4(vertexBuf,1.0);\n\
+											gl_Position = viewPort*cameraRot*vec4(vertexBuf,1.0);\n\
 											fragmentColor=colorBuffer;\n\
 										}";
 
