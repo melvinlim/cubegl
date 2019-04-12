@@ -1,5 +1,5 @@
 var checkboxFunction;
-var setRotationFunction;
+var setRotationSpeed;
 var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
 var spinnerElement = document.getElementById('spinner');
@@ -11,7 +11,7 @@ var setAngleZ;
 var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
-		setRotationFunction=Module.cwrap('setRotationSpeed',null,['float']);
+		setRotationSpeed=Module.cwrap('setRotationSpeed',null,['float']);
 		setAngleX=Module.cwrap('setAngleX',null,['double']);
 		setAngleY=Module.cwrap('setAngleY',null,['double']);
 		setAngleZ=Module.cwrap('setAngleZ',null,['double']);
@@ -30,7 +30,8 @@ var Module = {
 
 		initSlider("mySliderX","slider_value_x","0.05",setAngleX);
 		initSlider("mySliderY","slider_value_y","0.05",setAngleY);
-		initSlider("cubeSpeedSlider","cubeSpeedVal","0.5",setRotationFunction);
+		initSlider("mySliderZ","slider_value_z","0.05",setAngleZ);
+		initSlider("cubeSpeedSlider","cubeSpeedVal","0.5",setRotationSpeed);
 	},
 	preRun: [],
 	postRun: [],
