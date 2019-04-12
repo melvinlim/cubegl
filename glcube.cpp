@@ -92,11 +92,11 @@ GLuint colorBuffer;
 GLuint program;
 int width=XLEN;
 int height=YLEN;
-glm::mat4 mvp;
+glm::mat4 viewPortMat;
 glm::mat4 Projection;
 glm::mat4 View;
 mat4 identityMat;
-mat4 cameraRotation;
+mat4 cameraRotMat;
 vec3 cameraPos;
 GLuint viewPortLoc;
 GLuint cameraRotLoc;
@@ -106,7 +106,7 @@ void initScene(){
 	//ortho camera :
 	//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
 	identityMat=mat4(1.0f);
-	cameraRotation=identityMat;
+	cameraRotMat=identityMat;
 	//cameraPos=vec3(4,3,3); 
 	cameraPos=vec3(0,0,-4); 
 	 
@@ -118,29 +118,26 @@ void initScene(){
 			);
 		
 	mat4 Model = glm::mat4(1.0f);
-	mvp = Projection * View * Model;
+	viewPortMat = Projection * View * Model;
 }
 void updateScene(){
 
 	if(autoRotate){
 		if(reqAngleY!=currentAngleY){
-			cameraRotation=rotate(cameraRotation,radians(reqAngleY-currentAngleY),vec3(0,1,0));
+			cameraRotMat=rotate(cameraRotMat,radians(reqAngleY-currentAngleY),vec3(0,1,0));
 			currentAngleY=reqAngleY;
 		}
 		if(reqAngleZ!=currentAngleZ){
-			cameraRotation=rotate(cameraRotation,radians(reqAngleZ-currentAngleZ),vec3(0,0,1));
+			cameraRotMat=rotate(cameraRotMat,radians(reqAngleZ-currentAngleZ),vec3(0,0,1));
 			currentAngleZ=reqAngleZ;
 		}
-		cameraRotation=rotate(cameraRotation,radians(1.0f),vec3(1,0,0));
-		//cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(0,0,1));
-//		std::cout<<glm::to_string(cameraRotation)<<std::endl;
+		cameraRotMat=rotate(cameraRotMat,radians(1.0f),vec3(1,0,0));
+//		std::cout<<glm::to_string(cameraRotMat)<<std::endl;
 
-		glUniformMatrix4fv(cameraRotLoc,1, GL_FALSE, value_ptr(cameraRotation));
+		glUniformMatrix4fv(cameraRotLoc,1,GL_FALSE,value_ptr(cameraRotMat));
 	}
-//	MatrixID = glGetUniformLocation(program,"cameraRot");
-//	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
 
-	glUniformMatrix4fv(viewPortLoc,1,GL_FALSE,value_ptr(mvp));
+	glUniformMatrix4fv(viewPortLoc,1,GL_FALSE,value_ptr(viewPortMat));
 }
 
 void initGL(){
