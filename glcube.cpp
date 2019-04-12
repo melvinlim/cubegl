@@ -252,6 +252,8 @@ void main_loop(){
 }
 
 static void setup_opengl( int width, int height ){
+    glEnable(GL_DEPTH);
+    glDepthFunc(GL_LESS);
     //glShadeModel( GL_SMOOTH );
     glCullFace( GL_BACK );
     glFrontFace( GL_CCW );

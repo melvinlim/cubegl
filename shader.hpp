@@ -13,19 +13,18 @@ void loadShaders(GLuint programID){
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	string VertexShaderCode;
-/*
-											fragmentColor=gl_Position*0.5+0.5;\n\
-*/
-
-VertexShaderCode="	attribute vec4 vertexBuf;\n\
-										uniform mat4 viewPort;\n\
-										uniform mat4 cameraRot;\n\
-										attribute vec4 colorBuffer;\n\
-										varying vec4 fragmentColor;\n\
-										void main(){\n\
-											gl_Position=viewPort*cameraRot*vertexBuf;\n\
-											fragmentColor=colorBuffer;\n\
-										}";
+VertexShaderCode=R"(
+											//fragmentColor=gl_Position*0.5+0.5;
+											attribute vec4 vertexBuf;
+											uniform mat4 viewPort;
+											uniform mat4 cameraRot;
+											attribute vec4 colorBuffer;
+											varying vec4 fragmentColor;
+											void main(){
+												gl_Position=viewPort*cameraRot*vertexBuf;
+												fragmentColor=colorBuffer;
+											}
+)";
 
 	string FragmentShaderCode;
 /*
@@ -38,18 +37,16 @@ while ((dp = readdir(dirp)) != NULL)
 printf("%s\n",dp->d_name);
 closedir(dirp);
 */
-/*
-												gl_FragColor=vec4(0,0,1,1);\n\
-											attribute vec4 colorBuffer;\n\
-												gl_FragColor=colorBuffer;\n\
-*/
-FragmentShaderCode="	#ifdef GL_ES\n\
-											precision mediump float;\n\
-											#endif\n\
-											varying vec4 fragmentColor;\n\
-											void main(){\n\
-												gl_FragColor=fragmentColor;\n\
-											}";
+FragmentShaderCode=R"(
+											#ifdef GL_ES
+											precision mediump float;
+											#endif
+											varying vec4 fragmentColor;
+											void main(){
+												//gl_FragColor=vec4(0,0,1,1);
+												gl_FragColor=fragmentColor;
+											}
+)";
 
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
