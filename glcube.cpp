@@ -66,6 +66,10 @@ static GLuint elements[]={
 	6,7,4,
 	4,7,0,
 	0,7,1,
+	1,7,6,
+	6,2,1,
+	3,2,6,
+	6,5,3,
 };
 
 static const GLfloat vertexColors[]={
@@ -184,7 +188,7 @@ void draw2(){
 	updateScene();
 	glUseProgram(program);
 	//glDrawArrays(GL_TRIANGLES,0,3);
-	glDrawElements(GL_TRIANGLES,24,GL_UNSIGNED_INT,0);
+	glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
 	SDL_GL_SwapBuffers();
 }
