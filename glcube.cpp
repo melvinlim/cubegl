@@ -322,7 +322,7 @@ int main(){
 
 	emscripten_set_main_loop(main_loop,0,0);
 //	emscripten_set_main_loop_timing(EM_TIMING_RAF,10);
-	printf("Rotating 3D cube written in C using SDL and OpenGL.  Converted to Javascript through Emscripten.\n");
+	printf("Rotating 3D cube written in C++ using SDL and OpenGL.  Converted to WebASM through Emscripten.\n");
 	printf("Press spacebar to pause rotation.\n");
 	printf("Press up/down to rotate up/down.\n");
 	printf("Press left/right to rotate left/right.\n");
