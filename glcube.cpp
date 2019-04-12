@@ -1,12 +1,21 @@
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include<GL/glew.h>
+//#include<GL/gl.h>
+//#include<GL/glu.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+#include<glm/gtx/string_cast.hpp>
+#include<glm/ext.hpp>
+#include"shader.hpp"
+
+#include<iostream>
 
 #include <stdlib.h>
-
 static GLboolean should_rotate = GL_TRUE;
 
 #include<stdio.h>
 #include<SDL/SDL.h>
+SDL_Window *window;
 
 #ifdef __EMSCRIPTEN__
 #include<emscripten.h>
@@ -14,6 +23,7 @@ static GLboolean should_rotate = GL_TRUE;
 
 #define XLEN 512
 #define YLEN 512
+using namespace glm;
 
 static float angle_y=0.0;
 static float angle_z=0.0;
@@ -36,16 +46,120 @@ extern "C"{
 	}
 }
 
-static void quit_tutorial( int code )
-{
-    SDL_Quit( );
-    exit( code );
+static const GLfloat vertexPositions[] = {
+	-1,-1,
+	1,-1,
+	0,1
+};
+
+static const GLfloat vertexColors[] = {
+	0.2,0.8,0.1,1,
+	0.6,0.4,0.2,1,
+	0.1,0.4,0.7,1,
+};
+
+GLuint coord2d;
+GLuint colorBuffer;
+GLuint program;
+int width=XLEN;
+int height=YLEN;
+glm::mat4 mvp;
+glm::mat4 Projection;
+glm::mat4 View;
+mat4 identityMat;
+mat4 cameraRotation;
+vec3 cameraPos;
+void initScene(){
+// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+Projection = glm::perspective(glm::radians(45.0f), (float) width / (float)height, 0.1f, 100.0f);
+  
+//ortho camera :
+//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
+identityMat=mat4(1.0f);
+cameraRotation=identityMat;
+cameraPos=vec3(4,3,3); 
+cameraPos=vec3(0,0,-3); 
+ 
+// Camera matrix
+View = glm::lookAt(
+    cameraPos,
+    glm::vec3(0,0,0), // and looks at the origin
+    glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+    );
+  
+// Model matrix : an identity matrix (model will be at the origin)
+mat4 Model = glm::mat4(1.0f);
+mvp = Projection * View * Model;
+}
+void updateScene(){
+	GLuint MatrixID;
+
+	if(should_rotate){
+		cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(0,0,1));
+//		std::cout<<glm::to_string(cameraRotation)<<std::endl;
+
+		MatrixID = glGetUniformLocation(program,"cameraRot");
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
+	}
+
+	MatrixID = glGetUniformLocation(program,"viewPort");
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
+}
+
+void initGL(){
+	program=glCreateProgram();
+
+	glGenBuffers(1, &coord2d);
+	glGenBuffers(1, &colorBuffer);
+
+	initScene();
+	loadShaders(program);
+
+	glEnableVertexAttribArray(glGetAttribLocation(program,"coord2d"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, coord2d);
+	//glBindAttribLocation(program,0,"coord2d");
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
+	glVertexAttribPointer(
+		glGetAttribLocation(program,"coord2d"),
+		2,						// size
+		GL_FLOAT,			// type
+		GL_FALSE,			// normalized?
+		0,						// stride
+		0							// array buffer offset
+	);
+
+	glEnableVertexAttribArray(glGetAttribLocation(program,"colorBuffer"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	//glBindAttribLocation(program,1,"colorBuffer");
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColors), vertexColors, GL_STATIC_DRAW);
+	glVertexAttribPointer(
+		glGetAttribLocation(program,"colorBuffer"),
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		0 			                          // array buffer offset
+	);
+
+//	glDisableVertexAttribArray(0);
+}
+
+void draw2(){
+	glClearColor(0,0,0.5,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	updateScene();
+	glUseProgram(program);
+	glDrawArrays(GL_TRIANGLES,0,3);
+	//SDL_GL_SwapWindow(window);
+	SDL_GL_SwapBuffers();
 }
 
 static void handle_key_down(SDL_keysym* keysym){
 	switch( keysym->sym ) {
 		case SDLK_ESCAPE:
-			quit_tutorial( 0 );
+			SDL_Quit( );
 		break;
 		case SDLK_SPACE:
 			should_rotate = !should_rotate;
@@ -69,7 +183,6 @@ static void handle_key_down(SDL_keysym* keysym){
 
 static void process_events( void )
 {
-    /* Our SDL event placeholder. */
     SDL_Event event;
 
     /* Grab all the events off the queue. */
@@ -82,12 +195,10 @@ static void process_events( void )
             break;
         case SDL_QUIT:
             /* Handle quit requests (like Ctrl-c). */
-            quit_tutorial( 0 );
+						SDL_Quit( );
             break;
         }
-
     }
-
 }
 
 static void draw_screen( void ){
@@ -230,21 +341,14 @@ static void draw_screen( void ){
     glEnd( );
 
     /*
-     * Swap the buffers. This this tells the driver to
-     * render the next frame from the contents of the
-     * back-buffer, and to set all rendering operations
-     * to occur on what was the front-buffer.
-     *
-     * Double buffering prevents nasty visual tearing
-     * from the application drawing on areas of the
-     * screen that are being updated at the same time.
      */
     SDL_GL_SwapBuffers( );
 }
 
 void main_loop(){
 	process_events();
-	draw_screen();
+//	draw_screen();
+	draw2();
 }
 
 static void setup_opengl( int width, int height ){
@@ -267,25 +371,30 @@ static void setup_opengl( int width, int height ){
      * EXERCISE:
      * Replace this with a call to glFrustum.
      */
-    gluPerspective( 60.0, ratio, 1.0, 1024.0 );
+//    gluPerspective( 60.0, ratio, 1.0, 1024.0 );
 }
 
 static void setup_sdl_window(int width,int height){
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+		printf("Video initialization failed: %s\n", SDL_GetError( ) );
+	}
+/*
+//SDL2 initialization.  requireds -s USE_SDL=2 in makefile.
+	window = SDL_CreateWindow("OpenGL",
+		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		XLEN, YLEN,
+		SDL_WINDOW_OPENGL);
+	//	SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	SDL_GL_CreateContext(window);
+*/
 	const SDL_VideoInfo* info;
 	int bpp = 0;	/* Color depth in bits of our window. */
 	int flags = 0;
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-		printf("Video initialization failed: %s\n", SDL_GetError( ) );
-		quit_tutorial( 1 );
-	}
-
 	info = SDL_GetVideoInfo( );
 
 	if( !info ) {
 		printf("Video query failed: %s\n", SDL_GetError( ) );
-		quit_tutorial( 1 );
 	}
-
 	bpp = info->vfmt->BitsPerPixel;
 
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -294,30 +403,30 @@ static void setup_sdl_window(int width,int height){
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-	/*
-	 * EXERCISE:
-	 * Make starting windowed an option, and
-	 * handle the resize events properly with
-	 * glViewport.
-	 */
 	//flags = SDL_OPENGL | SDL_FULLSCREEN;
 	flags = SDL_OPENGL;
 	if( SDL_SetVideoMode( width, height, bpp, flags ) == 0 ) {
 		// DISPLAY not set, the specified resolution not available?
 		printf("Video mode set failed: %s\n",	 SDL_GetError( ) );
-		quit_tutorial( 1 );
 	}
-
+/*
+GLEW init.  only required for GLEW extensions.
+	GLenum glew_status = glewInit();
+	if (glew_status != GLEW_OK) {
+		printf("Error: glewInit: %s\n",glewGetErrorString(glew_status));
+	}
+*/
 }
 
 int main(){
-	int width = 0;
-	int height = 0;
+	int width;
+	int height;
 
 	width = XLEN;
 	height = YLEN;
 	setup_sdl_window(width,height);
-	setup_opengl( width, height );
+	//setup_opengl( width, height );
+	initGL();
 
 	emscripten_set_main_loop(main_loop,0,0);
 //	emscripten_set_main_loop_timing(EM_TIMING_RAF,10);
