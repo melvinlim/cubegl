@@ -1,6 +1,5 @@
 var checkboxFunction;
 var setRotationFunction;
-var setAngles;
 var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
 var spinnerElement = document.getElementById('spinner');
@@ -9,7 +8,8 @@ var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
 		setRotationFunction=Module.cwrap('setRotationSpeed',null,['float']);
-		setAngles=Module.cwrap('setAngles',null,['double','double']);
+		setAngleY=Module.cwrap('setAngleY',null,['double']);
+		setAngleZ=Module.cwrap('setAngleZ',null,['double']);
 	},
 	preRun: [],
 	postRun: [],
@@ -80,10 +80,27 @@ window.onerror = function() {
 		if (text) Module.printErr('[post-exception status] ' + text);
 	};
 };
+
+function initRotationSlider(sliderName,sliderValue,funcName){
+	var slider=document.getElementById(sliderName);
+	var value=document.getElementById(sliderValue);
+	slider.step="0.05"
+	value.innerHTML=slider.value;
+
+	slider.oninput=function(){
+		value.innerHTML=slider.value;
+		funcName(slider.value);
+	}
+}
 var sliderX = document.getElementById("mySliderX");
 var sliderOutputX = document.getElementById("slider_value_x");
 sliderX.step="0.05"
 sliderOutputX.innerHTML = sliderX.value;
+sliderX.oninput = function() {
+	sliderOutputX.innerHTML = this.value;
+	setAngleZ(sliderX.value);
+}
+
 var sliderY = document.getElementById("mySliderY");
 var sliderOutputY = document.getElementById("slider_value_y");
 sliderY.step="0.05"
@@ -93,14 +110,9 @@ var rotationSpeedDisplay = document.getElementById("cubeSpeedVal");
 rotationSpeedSlider.step="0.5"
 rotationSpeedDisplay.innerHTML = rotationSpeedSlider.value;
 
-sliderX.oninput = function() {
-	sliderOutputX.innerHTML = this.value;
-	setAngles(sliderX.value,sliderY.value);
-}
-
 sliderY.oninput = function() {
 	sliderOutputY.innerHTML = this.value;
-	setAngles(sliderX.value,sliderY.value);
+	setAngleY(sliderY.value);
 }
 
 rotationSpeedSlider.oninput = function() {

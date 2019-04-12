@@ -34,8 +34,11 @@ static float currentAngleZ=45.0;
 static float autodelay=1.0;
 
 extern "C"{
-	void setAngles(const double ucy,const double ucz){
+	void setAngleY(const double ucy){
 		reqAngleY=ucy;
+	}
+
+	void setAngleZ(const double ucz){
 		reqAngleZ=ucz;
 	}
 
