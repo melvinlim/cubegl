@@ -17,13 +17,13 @@ void loadShaders(GLuint programID){
 											fragmentColor=gl_Position*0.5+0.5;\n\
 */
 
-VertexShaderCode="	attribute vec3 vertexBuf;\n\
+VertexShaderCode="	attribute vec4 vertexBuf;\n\
 										uniform mat4 viewPort;\n\
 										uniform mat4 cameraRot;\n\
 										attribute vec4 colorBuffer;\n\
 										varying vec4 fragmentColor;\n\
 										void main(){\n\
-											gl_Position = viewPort*cameraRot*vec4(vertexBuf,1.0);\n\
+											gl_Position=viewPort*cameraRot*vertexBuf;\n\
 											fragmentColor=colorBuffer;\n\
 										}";
 

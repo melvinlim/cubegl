@@ -49,15 +49,15 @@ extern "C"{
 	}
 }
 
-static const GLfloat vertexPositions[]={
-	-1,-1,-1,
-	+1,-1,-1,
-	+1,+1,-1,
-	-1,+1,-1,
-	-1,-1,+1,
-	-1,+1,+1,
-	+1,+1,+1,
-	+1,-1,+1,
+static const GLfloat vertexData[]={
+	-1,-1,-1,1,
+	+1,-1,-1,1,
+	+1,+1,-1,1,
+	-1,+1,-1,1,
+	-1,-1,+1,1,
+	-1,+1,+1,1,
+	+1,+1,+1,1,
+	+1,-1,+1,1,
 };
 
 static GLuint elements[]={
@@ -75,7 +75,7 @@ static GLuint elements[]={
 	6,5,3,
 };
 
-static const GLfloat vertexColors[]={
+static const GLfloat colorData[]={
 	1,0,0,1,
 	0,1,0,1,
 	0,0,1,1,
@@ -100,7 +100,7 @@ mat4 cameraRotation;
 vec3 cameraPos;
 void initScene(){
 //FOV,aspect ratio,znear,zfar
-Projection = glm::perspective(glm::radians(45.0f),(float)width/(float)height,0.1f,100.0f);
+Projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,1.0f,1024.0f);
 //ortho camera :
 //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
 identityMat=mat4(1.0f);
@@ -121,7 +121,6 @@ mvp = Projection * View * Model;
 }
 void updateScene(){
 	GLuint MatrixID;
-
 
 	if(autoRotate){
 		if(reqAngleY!=currentAngleY){
@@ -163,10 +162,10 @@ void initGL(){
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
 	//glBindAttribLocation(program,0,"vertexBuf");
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 	glVertexAttribPointer(
 		glGetAttribLocation(program,"vertexBuf"),
-		3,						//coordinates per vertex
+		4,						//coordinates per vertex
 		GL_FLOAT,			//type
 		GL_FALSE,			//normalized?
 		0,						//stride
@@ -177,14 +176,14 @@ void initGL(){
 
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	//glBindAttribLocation(program,1,"colorBuffer");
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColors), vertexColors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
 	glVertexAttribPointer(
 		glGetAttribLocation(program,"colorBuffer"),
-		3,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		0 			                          // array buffer offset
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		0
 	);
 
 //	glDisableVertexAttribArray(0);
@@ -253,24 +252,12 @@ void main_loop(){
 }
 
 static void setup_opengl( int width, int height ){
-    float ratio = (float) width / (float) height;
     //glShadeModel( GL_SMOOTH );
     glCullFace( GL_BACK );
     glFrontFace( GL_CCW );
     glEnable( GL_CULL_FACE );
     glClearColor( 0, 0, 0, 0 );
     glViewport( 0, 0, width, height );
-    /*
-     * Change to the projection matrix and set
-     * our viewing volume.
-     */
-    //glMatrixMode( GL_PROJECTION );
-    //glLoadIdentity( );
-    /*
-     * EXERCISE:
-     * Replace this with a call to glFrustum.
-     */
-//    gluPerspective( 60.0, ratio, 1.0, 1024.0 );
 }
 
 static void setup_sdl_window(int width,int height){
