@@ -99,6 +99,7 @@ mat4 identityMat;
 mat4 cameraRotation;
 vec3 cameraPos;
 GLuint viewPortLoc;
+GLuint cameraRotLoc;
 void initScene(){
 	//FOV,aspect ratio,znear,zfar
 	Projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,1.0f,1024.0f);
@@ -120,7 +121,6 @@ void initScene(){
 	mvp = Projection * View * Model;
 }
 void updateScene(){
-	GLuint MatrixID;
 
 	if(autoRotate){
 		if(reqAngleY!=currentAngleY){
@@ -135,8 +135,7 @@ void updateScene(){
 		//cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(0,0,1));
 //		std::cout<<glm::to_string(cameraRotation)<<std::endl;
 
-		MatrixID = glGetUniformLocation(program,"cameraRot");
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
+		glUniformMatrix4fv(cameraRotLoc,1, GL_FALSE, value_ptr(cameraRotation));
 	}
 //	MatrixID = glGetUniformLocation(program,"cameraRot");
 //	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
@@ -186,6 +185,7 @@ void initGL(){
 	);
 
 	viewPortLoc=glGetUniformLocation(program,"viewPort");
+	cameraRotLoc=glGetUniformLocation(program,"cameraRot");
 //	glDisableVertexAttribArray(0);
 }
 
