@@ -46,19 +46,26 @@ extern "C"{
 	}
 }
 
-static const GLfloat vertexPositions[] = {
-	-1,-1,
-	1,-1,
-	0,1
+static const GLfloat vertexPositions[]={
+	-1,-1,0,
+	1,-1,0,
+	1,1,0,
 };
 
-static const GLfloat vertexColors[] = {
-	0.2,0.8,0.1,1,
-	0.6,0.4,0.2,1,
-	0.1,0.4,0.7,1,
+static GLuint elements[]={
+	0,
+	1,
+	2
 };
 
-GLuint coord2d;
+static const GLfloat vertexColors[]={
+	1,0,0,1,
+	0,1,0,1,
+	0,0,1,1,
+};
+
+GLuint elementsBuf;
+GLuint vertexBuf;
 GLuint colorBuffer;
 GLuint program;
 int width=XLEN;
@@ -109,24 +116,28 @@ void updateScene(){
 void initGL(){
 	program=glCreateProgram();
 
-	glGenBuffers(1, &coord2d);
-	glGenBuffers(1, &colorBuffer);
+	glGenBuffers(1,&elementsBuf);
+	glGenBuffers(1,&vertexBuf);
+	glGenBuffers(1,&colorBuffer);
 
 	initScene();
 	loadShaders(program);
 
-	glEnableVertexAttribArray(glGetAttribLocation(program,"coord2d"));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,elementsBuf);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(elements),elements,GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, coord2d);
-	//glBindAttribLocation(program,0,"coord2d");
+	glEnableVertexAttribArray(glGetAttribLocation(program,"vertexBuf"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
+	//glBindAttribLocation(program,0,"vertexBuf");
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
 	glVertexAttribPointer(
-		glGetAttribLocation(program,"coord2d"),
-		2,						// size
-		GL_FLOAT,			// type
-		GL_FALSE,			// normalized?
-		0,						// stride
-		0							// array buffer offset
+		glGetAttribLocation(program,"vertexBuf"),
+		3,						//coordinates per vertex
+		GL_FLOAT,			//type
+		GL_FALSE,			//normalized?
+		0,						//stride
+		0							//buffer offset
 	);
 
 	glEnableVertexAttribArray(glGetAttribLocation(program,"colorBuffer"));
@@ -151,7 +162,8 @@ void draw2(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	updateScene();
 	glUseProgram(program);
-	glDrawArrays(GL_TRIANGLES,0,3);
+	//glDrawArrays(GL_TRIANGLES,0,3);
+	glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
 	SDL_GL_SwapBuffers();
 }
