@@ -1,5 +1,5 @@
 var checkboxFunction;
-var setDelayFunction;
+var setRotationFunction;
 var setAngles;
 var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
@@ -8,7 +8,7 @@ var spinnerElement = document.getElementById('spinner');
 var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
-		setDelayFunction=Module.cwrap('setDelay',null,['int']);
+		setRotationFunction=Module.cwrap('setRotationSpeed',null,['float']);
 		setAngles=Module.cwrap('setAngles',null,['double','double']);
 	},
 	preRun: [],
@@ -83,15 +83,15 @@ window.onerror = function() {
 var sliderX = document.getElementById("mySliderX");
 var sliderOutputX = document.getElementById("slider_value_x");
 sliderX.step="0.05"
-sliderOutputX.innerHTML = sliderX.value; // Display the default slider value
+sliderOutputX.innerHTML = sliderX.value;
 var sliderY = document.getElementById("mySliderY");
 var sliderOutputY = document.getElementById("slider_value_y");
 sliderY.step="0.05"
-sliderOutputY.innerHTML = sliderY.value; // Display the default slider value
-var sliderDelay = document.getElementById("mySliderDelay");
-var sliderOutputDelay = document.getElementById("slider_value_delay");
-sliderDelay.step="5"
-sliderOutputDelay.innerHTML = sliderDelay.value;
+sliderOutputY.innerHTML = sliderY.value;
+var rotationSpeedSlider = document.getElementById("cubeSpeedSlider");
+var rotationSpeedDisplay = document.getElementById("cubeSpeedVal");
+rotationSpeedSlider.step="0.5"
+rotationSpeedDisplay.innerHTML = rotationSpeedSlider.value;
 
 sliderX.oninput = function() {
 	sliderOutputX.innerHTML = this.value;
@@ -103,7 +103,7 @@ sliderY.oninput = function() {
 	setAngles(sliderX.value,sliderY.value);
 }
 
-sliderDelay.oninput = function() {
-	sliderOutputDelay.innerHTML = this.value;
-	setDelayFunction(this.value);
+rotationSpeedSlider.oninput = function() {
+	rotationSpeedDisplay.innerHTML = this.value;
+	setRotationFunction(this.value);
 }

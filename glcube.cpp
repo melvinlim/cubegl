@@ -31,8 +31,7 @@ static float reqAngleZ=0.0;
 static float currentAngleY=45.0;
 static float currentAngleZ=45.0;
 
-int forward;
-int autodelay;
+static float autodelay=1.0;
 
 extern "C"{
 	void setAngles(const double ucy,const double ucz){
@@ -40,7 +39,7 @@ extern "C"{
 		reqAngleZ=ucz;
 	}
 
-	void setDelay(const int delay){
+	void setRotationSpeed(const float delay){
 		autodelay=delay;
 	}
 
@@ -130,7 +129,7 @@ void updateScene(){
 		currentAngleZ=reqAngleZ;
 	}
 	if(autoRotate){
-		cameraRotMat=rotate(cameraRotMat,radians(1.0f),vec3(1,0,0));
+		cameraRotMat=rotate(cameraRotMat,radians(autodelay),vec3(1,0,0));
 //		std::cout<<glm::to_string(cameraRotMat)<<std::endl;
 
 	}
