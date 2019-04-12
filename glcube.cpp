@@ -254,12 +254,12 @@ void main_loop(){
 static void setup_opengl( int width, int height ){
     glEnable(GL_DEPTH);
     glDepthFunc(GL_LESS);
-    //glShadeModel( GL_SMOOTH );
-    glCullFace( GL_BACK );
-    glFrontFace( GL_CCW );
-    glEnable( GL_CULL_FACE );
-    glClearColor( 0, 0, 0, 0 );
-    glViewport( 0, 0, width, height );
+    glCullFace(GL_BACK);
+//    glFrontFace(GL_CCW);
+    glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);
+    glClearColor(0,0,0,0);
+    glViewport(0,0,width,height);
 }
 
 static void setup_sdl_window(int width,int height){
