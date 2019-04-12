@@ -28,8 +28,8 @@ using namespace glm;
 static float reqAngleY=0.0;
 static float reqAngleZ=0.0;
 
-static float currentAngleY=0.0;
-static float currentAngleZ=0.0;
+static float currentAngleY=45.0;
+static float currentAngleZ=45.0;
 
 int forward;
 int autodelay;
@@ -108,33 +108,33 @@ void initScene(){
 	identityMat=mat4(1.0f);
 	cameraRotMat=identityMat;
 	//cameraPos=vec3(4,3,3); 
-	cameraPos=vec3(4,4,-4); 
+	cameraPos=vec3(4,4,0); 
 	 
 	// Camera matrix
 	View = glm::lookAt(
-			cameraPos,
-			glm::vec3(0,0,0), // and looks at the origin
-			glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-			);
+		cameraPos,				//camera location
+		glm::vec3(0,0,0), //location of origin
+		glm::vec3(0,0,1)  //up vector
+	);
 		
 	viewPortMat = Projection * View;
 }
 void updateScene(){
 
+	if(reqAngleY!=currentAngleY){
+		cameraRotMat=rotate(cameraRotMat,radians(reqAngleY-currentAngleY),vec3(0,1,0));
+		currentAngleY=reqAngleY;
+	}
+	if(reqAngleZ!=currentAngleZ){
+		cameraRotMat=rotate(cameraRotMat,radians(reqAngleZ-currentAngleZ),vec3(0,0,1));
+		currentAngleZ=reqAngleZ;
+	}
 	if(autoRotate){
-		if(reqAngleY!=currentAngleY){
-			cameraRotMat=rotate(cameraRotMat,radians(reqAngleY-currentAngleY),vec3(0,1,0));
-			currentAngleY=reqAngleY;
-		}
-		if(reqAngleZ!=currentAngleZ){
-			cameraRotMat=rotate(cameraRotMat,radians(reqAngleZ-currentAngleZ),vec3(0,0,1));
-			currentAngleZ=reqAngleZ;
-		}
 		cameraRotMat=rotate(cameraRotMat,radians(1.0f),vec3(1,0,0));
 //		std::cout<<glm::to_string(cameraRotMat)<<std::endl;
 
-		glUniformMatrix4fv(cameraRotLoc,1,GL_FALSE,value_ptr(cameraRotMat));
 	}
+	glUniformMatrix4fv(cameraRotLoc,1,GL_FALSE,value_ptr(cameraRotMat));
 
 	glUniformMatrix4fv(viewPortLoc,1,GL_FALSE,value_ptr(viewPortMat));
 }
