@@ -108,7 +108,7 @@ void initScene(){
 	identityMat=mat4(1.0f);
 	cameraRotMat=identityMat;
 	//cameraPos=vec3(4,3,3); 
-	cameraPos=vec3(0,0,-4); 
+	cameraPos=vec3(4,4,-4); 
 	 
 	// Camera matrix
 	View = glm::lookAt(
