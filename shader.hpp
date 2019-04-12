@@ -22,6 +22,7 @@ VertexShaderCode=R"(
 											varying vec4 fragmentColor;
 											void main(){
 												gl_Position=viewPort*cameraRot*vertexBuf;
+												//gl_Position=cameraRot*vertexBuf;
 												fragmentColor=colorBuffer;
 											}
 )";
