@@ -25,19 +25,23 @@ SDL_Window *window;
 #define YLEN 512
 using namespace glm;
 
+static float reqAngleX=0.0;
 static float reqAngleY=0.0;
 static float reqAngleZ=0.0;
 
+static float currentAngleX=45.0;
 static float currentAngleY=45.0;
 static float currentAngleZ=45.0;
 
 static float autodelay=1.0;
 
 extern "C"{
+	void setAngleX(const double ucx){
+		reqAngleX=ucx;
+	}
 	void setAngleY(const double ucy){
 		reqAngleY=ucy;
 	}
-
 	void setAngleZ(const double ucz){
 		reqAngleZ=ucz;
 	}
@@ -123,6 +127,10 @@ void initScene(){
 }
 void updateScene(){
 
+	if(reqAngleX!=currentAngleX){
+		cameraRotMat=rotate(cameraRotMat,radians(reqAngleX-currentAngleX),vec3(0,1,0));
+		currentAngleX=reqAngleX;
+	}
 	if(reqAngleY!=currentAngleY){
 		cameraRotMat=rotate(cameraRotMat,radians(reqAngleY-currentAngleY),vec3(0,1,0));
 		currentAngleY=reqAngleY;

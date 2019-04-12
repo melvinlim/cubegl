@@ -8,6 +8,7 @@ var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
 		setRotationFunction=Module.cwrap('setRotationSpeed',null,['float']);
+		setAngleX=Module.cwrap('setAngleX',null,['double']);
 		setAngleY=Module.cwrap('setAngleY',null,['double']);
 		setAngleZ=Module.cwrap('setAngleZ',null,['double']);
 	},
@@ -98,7 +99,7 @@ sliderX.step="0.05"
 sliderOutputX.innerHTML = sliderX.value;
 sliderX.oninput = function() {
 	sliderOutputX.innerHTML = this.value;
-	setAngleZ(sliderX.value);
+	setAngleX(sliderX.value);
 }
 
 var sliderY = document.getElementById("mySliderY");
