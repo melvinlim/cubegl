@@ -47,15 +47,19 @@ extern "C"{
 }
 
 static const GLfloat vertexPositions[]={
-	-1,-1,0,
-	1,-1,0,
-	1,1,0,
-	-1,1,0,
+	-1,-1,-1,
+	+1,-1,-1,
+	+1,+1,-1,
+	-1,+1,-1,
+	-1,-1,+1,
+	-1,+1,+1,
 };
 
 static GLuint elements[]={
 	0,1,2,
 	2,3,0,
+	0,3,4,
+	4,3,5,
 };
 
 static const GLfloat vertexColors[]={
@@ -63,6 +67,8 @@ static const GLfloat vertexColors[]={
 	0,1,0,1,
 	0,0,1,1,
 	0,1,1,1,
+	1,1,0,1,
+	1,0,1,1,
 };
 
 GLuint elementsBuf;
@@ -85,8 +91,8 @@ Projection = glm::perspective(glm::radians(45.0f), (float) width / (float)height
 //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
 identityMat=mat4(1.0f);
 cameraRotation=identityMat;
-cameraPos=vec3(4,3,3); 
-cameraPos=vec3(0,0,-3); 
+//cameraPos=vec3(4,3,3); 
+cameraPos=vec3(0,0,-4); 
  
 // Camera matrix
 View = glm::lookAt(
@@ -103,6 +109,7 @@ void updateScene(){
 	GLuint MatrixID;
 
 	if(should_rotate){
+		//cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(1,0,0));
 		cameraRotation=rotate(cameraRotation,radians(5.0f),vec3(0,0,1));
 //		std::cout<<glm::to_string(cameraRotation)<<std::endl;
 
@@ -164,7 +171,7 @@ void draw2(){
 	updateScene();
 	glUseProgram(program);
 	//glDrawArrays(GL_TRIANGLES,0,3);
-	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+	glDrawElements(GL_TRIANGLES,12,GL_UNSIGNED_INT,0);
 	//SDL_GL_SwapWindow(window);
 	SDL_GL_SwapBuffers();
 }
