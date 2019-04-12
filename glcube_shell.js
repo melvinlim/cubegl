@@ -4,6 +4,10 @@ var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
 var spinnerElement = document.getElementById('spinner');
 
+var setAngleX;
+var setAngleY;
+var setAngleZ;
+
 var Module = {
 	onRuntimeInitialized: function() {
 		checkboxFunction=Module.cwrap('checkbox',null);
@@ -11,6 +15,22 @@ var Module = {
 		setAngleX=Module.cwrap('setAngleX',null,['double']);
 		setAngleY=Module.cwrap('setAngleY',null,['double']);
 		setAngleZ=Module.cwrap('setAngleZ',null,['double']);
+
+		function initSlider(sliderName,sliderValue,stepSize,funcName){
+			var slider=document.getElementById(sliderName);
+			var value=document.getElementById(sliderValue);
+			slider.step=stepSize;
+			value.innerHTML=slider.value;
+
+			slider.oninput=function(){
+				value.innerHTML=slider.value;
+				funcName(slider.value);
+			}
+		}
+
+		initSlider("mySliderX","slider_value_x","0.05",setAngleX);
+		initSlider("mySliderY","slider_value_y","0.05",setAngleY);
+		initSlider("cubeSpeedSlider","cubeSpeedVal","0.5",setRotationFunction);
 	},
 	preRun: [],
 	postRun: [],
@@ -81,42 +101,3 @@ window.onerror = function() {
 		if (text) Module.printErr('[post-exception status] ' + text);
 	};
 };
-
-function initRotationSlider(sliderName,sliderValue,funcName){
-	var slider=document.getElementById(sliderName);
-	var value=document.getElementById(sliderValue);
-	slider.step="0.05"
-	value.innerHTML=slider.value;
-
-	slider.oninput=function(){
-		value.innerHTML=slider.value;
-		funcName(slider.value);
-	}
-}
-var sliderX = document.getElementById("mySliderX");
-var sliderOutputX = document.getElementById("slider_value_x");
-sliderX.step="0.05"
-sliderOutputX.innerHTML = sliderX.value;
-sliderX.oninput = function() {
-	sliderOutputX.innerHTML = this.value;
-	setAngleX(sliderX.value);
-}
-
-var sliderY = document.getElementById("mySliderY");
-var sliderOutputY = document.getElementById("slider_value_y");
-sliderY.step="0.05"
-sliderOutputY.innerHTML = sliderY.value;
-var rotationSpeedSlider = document.getElementById("cubeSpeedSlider");
-var rotationSpeedDisplay = document.getElementById("cubeSpeedVal");
-rotationSpeedSlider.step="0.5"
-rotationSpeedDisplay.innerHTML = rotationSpeedSlider.value;
-
-sliderY.oninput = function() {
-	sliderOutputY.innerHTML = this.value;
-	setAngleY(sliderY.value);
-}
-
-rotationSpeedSlider.oninput = function() {
-	rotationSpeedDisplay.innerHTML = this.value;
-	setRotationFunction(this.value);
-}
