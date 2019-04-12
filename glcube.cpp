@@ -98,26 +98,26 @@ glm::mat4 View;
 mat4 identityMat;
 mat4 cameraRotation;
 vec3 cameraPos;
+GLuint viewPortLoc;
 void initScene(){
-//FOV,aspect ratio,znear,zfar
-Projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,1.0f,1024.0f);
-//ortho camera :
-//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
-identityMat=mat4(1.0f);
-cameraRotation=identityMat;
-//cameraPos=vec3(4,3,3); 
-cameraPos=vec3(0,0,-4); 
- 
-// Camera matrix
-View = glm::lookAt(
-    cameraPos,
-    glm::vec3(0,0,0), // and looks at the origin
-    glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-    );
-  
-// Model matrix : an identity matrix (model will be at the origin)
-mat4 Model = glm::mat4(1.0f);
-mvp = Projection * View * Model;
+	//FOV,aspect ratio,znear,zfar
+	Projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,1.0f,1024.0f);
+	//ortho camera :
+	//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
+	identityMat=mat4(1.0f);
+	cameraRotation=identityMat;
+	//cameraPos=vec3(4,3,3); 
+	cameraPos=vec3(0,0,-4); 
+	 
+	// Camera matrix
+	View = glm::lookAt(
+			cameraPos,
+			glm::vec3(0,0,0), // and looks at the origin
+			glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+			);
+		
+	mat4 Model = glm::mat4(1.0f);
+	mvp = Projection * View * Model;
 }
 void updateScene(){
 	GLuint MatrixID;
@@ -141,8 +141,7 @@ void updateScene(){
 //	MatrixID = glGetUniformLocation(program,"cameraRot");
 //	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(cameraRotation));
 
-	MatrixID = glGetUniformLocation(program,"viewPort");
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
+	glUniformMatrix4fv(viewPortLoc,1,GL_FALSE,value_ptr(mvp));
 }
 
 void initGL(){
@@ -186,6 +185,7 @@ void initGL(){
 		0
 	);
 
+	viewPortLoc=glGetUniformLocation(program,"viewPort");
 //	glDisableVertexAttribArray(0);
 }
 
